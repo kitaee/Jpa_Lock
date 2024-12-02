@@ -57,4 +57,34 @@ public class LockTest {
         System.out.println("실패한 횟수 = " + failCount.get());
     }
 
+    @Test
+    @DisplayName("멀티쓰레드 상황에서 낙관적 티켓 카운팅을 감소시킨다.")
+    void issue_optimistic_ticket_in_multi_thread() throws InterruptedException {
+        final int executeNumber = 20;
+
+        final ExecutorService executorService = Executors.newFixedThreadPool(32);
+        final CountDownLatch countDownLatch = new CountDownLatch(executeNumber);
+
+        final AtomicInteger successCount = new AtomicInteger();
+        final AtomicInteger failCount = new AtomicInteger();
+
+        for(int i=0; i<executeNumber; i++) {
+            executorService.execute(() -> {
+                try {
+                    ticketService.issueOptimisticTicket(1L);
+                    successCount.getAndIncrement();
+                    System.out.println("티켓 발급 완료");
+                } catch (Exception e) {
+                    failCount.getAndIncrement();
+                    e.printStackTrace();
+                }
+                countDownLatch.countDown();
+            });
+        }
+
+        countDownLatch.await();
+
+        System.out.println("발급된 쿠폰의 개수 = " + successCount.get());
+        System.out.println("실패한 횟수 = " + failCount.get());
+    }
 }
