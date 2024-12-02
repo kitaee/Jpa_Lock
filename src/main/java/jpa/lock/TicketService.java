@@ -25,4 +25,11 @@ public class TicketService {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 티켓"));
         optimisticTicket.issue();
     }
+
+    @Transactional
+    public void issuePessimisticTicket(Long id) {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 티켓"));
+        ticket.issue();
+    }
 }
