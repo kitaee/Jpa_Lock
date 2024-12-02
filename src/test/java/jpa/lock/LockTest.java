@@ -27,7 +27,7 @@ public class LockTest {
     }
 
     @Test
-    @DisplayName("멀티쓰레드 상황에서 티켓 카운팅을 감소시킨다.")
+    @DisplayName("멀티쓰레드 상황에서 비관적 티켓 카운팅을 감소시킨다.")
     void issue_ticket_in_multi_thread() throws InterruptedException {
         final int executeNumber = 20;
 
